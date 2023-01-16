@@ -160,7 +160,7 @@ if __name__ == "__main__":
     cmd = args.c
     #cmd = "ifconfig"
 
-    dns_root = "m.z3.vc"
+    dns_root = "m.my.dns"
 
     vuln_param_name = "param"
 
