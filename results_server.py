@@ -9,6 +9,7 @@ import codecs
 import http.server
 import argparse
 import tempfile
+import gzip
 
 quad_ip = '2620:0:2e60::33'
 count = 200
@@ -84,9 +85,15 @@ class TestResolver:
                         for k,v in sorted(output_dict.items()):
                             output_bytes.extend(v)
 
-                        print("\n[*] Command output:\n======================")
-                        print(output_bytes.decode())
                         if len(output_bytes) > 0:
+
+                            # Decompress
+                            if chunk_idx == '1':
+                                output_bytes = gzip.decompress(output_bytes)
+
+                            print("\n[*] Command output:\n======================")
+                            print(output_bytes.decode())
+
                             with tempfile.NamedTemporaryFile(dir=".",delete=False) as temp:
                                 print("[*] Writing output to temp file: %s" % temp.name)
                                 temp.write(output_bytes)
